@@ -1,27 +1,23 @@
 <template>
   <div class="grid-wrapper">
     <Header/>
-    <Start class="main"/>
+    <AddWorkoutForm class="main"/>
     <Nav/>
   </div>
 </template>
 
 <script>
 // @ is an alias to /src
-import Start from '@/components/Start.vue'
+import AddWorkoutForm from '@/components/AddWorkoutForm.vue'
 import Header from '@/components/Header.vue'
 import Nav from '@/components/Nav.vue'
 
 export default {
-  name: 'home',
+  name: 'addWokout',
   components: {
-    Start,
+    AddWorkoutForm,
     Header,
     Nav,
   }
 }
 </script>
-
-<style lang="scss" scoped> 
-
-</style>

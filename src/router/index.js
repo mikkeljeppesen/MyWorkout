@@ -1,6 +1,9 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
 import Home from '../views/Home.vue'
+import firebase from 'firebase/app';
+import 'firebase/auth';
+import 'firebase/firestore';
 
 Vue.use(VueRouter)
 
@@ -17,7 +20,144 @@ const routes = [
     // this generates a separate chunk (about.[hash].js) for this route
     // which is lazy-loaded when the route is visited.
     component: () => import(/* webpackChunkName: "about" */ '../views/About.vue')
-  }
+  },
+  {
+    path: '/login',
+    name: 'Login',
+    component: () => import(/* webpackChunkName: "login" */ '../views/Login.vue')
+  },
+  {
+    path: '/signup',
+    name: 'Signup',
+    component: () => import(/* webpackChunkName: "signup" */ '../views/Signup.vue'),
+    
+  },
+  {
+    path: '/workouts', // denne er view/workouts som indeholder alle mine awesome worksouts
+    name: 'Workouts',
+    component: () => import(/* webpackChunkName: "workouts" */ '../views/Dashboard.vue'),
+    beforeEnter: function(to, from, next) {
+      firebase.firestore().collection("workout").where("user", "==", firebase.auth().currentUser.uid).get()
+      .then((data) => {
+        var workouts = []; //laver en liste over workouts
+        data.docs.forEach((doc) => {
+          let workout = doc.data(); //henter data fra documentet
+          workout.id = doc.id; //henter id fra documentet
+          workouts.push(workout); //tilføjer documentet til vores liste
+        })
+        to.params.workouts = workouts; //sender denne liste videre til page
+        next();
+      })
+    }
+  },
+  {
+    path: '/workouts/:id', // denne indeholder en workout hvor jeg kan se de forskellige øvelser. når jeg trykker på en workout i listen skal jeg sende et id videre 
+    name: 'Workout', 
+    component: () => import(/* webpackChunkName: "Workout" */ '../views/Dashboard.vue'),
+    beforeEnter: function(to, from, next) {
+      //når vi kalder denne funktion, så får vi kun catch/error, hvis noget går galt (databsen er nede, eller noget)
+      //det betyder, at hvis det dokument vi leder efter ikke eksisterer, så får vi fagtisk ikke en error,
+     firebase.firestore().collection("workout").doc(to.params.id).get() 
+     .then((doc) => {
+       if(doc){ //vi ser om det er et dokument
+        let workout = doc.data();
+
+        let promises = [];
+
+        workout.exercises.forEach((exercise) => {
+          promises.push(firebase.firestore().collection("exercises").doc(exercise).get());
+        })
+
+        Promise.all(promises)
+        .then((docs) => {
+          workout.exercises = [];
+          docs.forEach((doc) => {
+            let exercise = doc.data();
+            exercise.id = doc.id;
+            workout.exercises.push(exercise);
+          })
+          to.params.workout = workout;
+          next();
+        })
+        .catch(() => {
+          next("/404");
+        })
+       }else{
+         next("/404");
+       }
+     })
+     .catch((erorr) => {
+       
+       next("/404");
+     })
+    }
+  },
+  {
+    path: '/workouts/:id/stats/:idE', // denne indeholder en workout hvor jeg kan se de forskellige øvelser. når jeg trykker på en workout i listen skal jeg sende et id videre 
+    name: 'Stats', 
+    component: () => import(/* webpackChunkName: "Workout" */ '../views/Stats.vue'),
+    beforeEnter: function(to, from, next) {
+      let minWorkout = to.params.id;
+      let minExercise = to.params.idE;
+    //   //når vi kalder denne funktion, så får vi kun catch/error, hvis noget går galt (databsen er nede, eller noget)
+    //   //det betyder, at hvis det dokument vi leder efter ikke eksisterer, så får vi fagtisk ikke en error,
+    //  firebase.firestore().collection("workout").doc(to.params.id).get() 
+    //  .then((doc) => {
+    //    if(doc){ //vi ser om det er et dokument
+    //     let workout = doc.data();
+
+    //     let promises = [];
+
+    //     workout.exercises.forEach((exercise) => {
+    //       promises.push(firebase.firestore().collection("exercises").doc(exercise).get());
+    //     })
+
+    //     Promise.all(promises)
+    //     .then((docs) => {
+    //       workout.exercises = [];
+    //       docs.forEach((doc) => {
+    //         let exercise = doc.data();
+    //         exercise.id = doc.id;
+    //         workout.exercises.push(exercise);
+    //       })
+    //       to.params.workout = workout;
+    //       next();
+    //     })
+    //     .catch(() => {
+    //       next("/404");
+    //     })
+    //    }else{
+    //      next("/404");
+    //    }
+    //  })
+    //  .catch((erorr) => {
+       
+    //    next("/404");
+    //  })
+    next();
+    }
+  },
+  {
+    path: '/addWorkout', // denne er view/workouts som indeholder alle mine awesome worksouts
+    name: 'AddWorkout',
+    component: () => import(/* webpackChunkName: "addWorkout" */ '../views/AddWorkout.vue'), // jeg skal lave mig et view hvor man kan se alle exercises?
+  },
+  {
+    path: '/404', 
+    name: 'NotFound',
+    component: () => import(/* webpackChunkName: "NotFound" */ '../views/404.vue'),
+  },
+  {
+    path: '/workouts/:id/addExercise',
+    name: 'addExercise',
+    component: () => import(/* webpackChunkName: "addExercise" */ '../views/AddExercise.vue'),
+  },
+  {
+    path: '/workouts/:id/stats/',
+    name: 'stats',
+    component: () => import(/* webpackChunkName: "stats" */ '../views/Stats.vue'),
+  },
+
 ]
 
 const router = new VueRouter({
