@@ -1,23 +1,36 @@
 <template>
   <div class="grid-wrapper">
-    <Header/>
-    <ExerciseStats class="main"/>
-    <Nav/>
+    <Header />
+    <div class="main">
+      <ExerciseProgress :styles="myStyles" />
+    </div>
+    <Nav />
   </div>
 </template>
 
 <script>
 // @ is an alias to /src
-import ExerciseStats from '@/components/ExerciseStats.vue'
-import Header from '@/components/Header.vue'
-import Nav from '@/components/Nav.vue'
+import ExerciseProgress from "@/components/ExerciseProgress.vue";
+import Header from "@/components/Header.vue";
+import Nav from "@/components/Nav.vue";
 
 export default {
-  name: 'stats',
+  name: "stats",
   components: {
-    ExerciseStats,
+    ExerciseProgress,
     Header,
-    Nav,
+    Nav
+  },
+  computed: {
+    myStyles() {
+      return {
+        width: `90%`, // remeber that the ratio aspect default is true - that why i font define the height
+        position: "relative"
+      };
+    }
   }
-}
+};
 </script>
+
+<style>
+</style>

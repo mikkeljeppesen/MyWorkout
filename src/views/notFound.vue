@@ -1,13 +1,15 @@
 <template>
     <div class="error">
-        <h2>this is 404</h2>
+        <h3>PAGE NOT FOUND</h3>
+        <h2>404</h2>
+        <a>TAKE ME BACK</a>
     </div>
 </template>
 
 <script>
 import firebase from 'firebase/app';
 export default {
-  name: "404",
+  name: "notFound",
   methods: {
   },
 }
@@ -15,11 +17,19 @@ export default {
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped lang="scss">
-$primary: #232429;
-$btn-primary: #1B1C20;
-$color: #707070;
-$shadow: 5px 5px 5px rgba(0, 0, 0, 0.25);
+$dark: #323132;
 $radius: 5px;
 $padding: 2rem;
 
+h3 {
+  color: $dark;
+}
+
+h2 {
+  text-shadow: 3px 3px #383838;
+}
+
+a {
+  color: $dark;
+}
 </style>

@@ -1,23 +1,10 @@
 <template>
   <div id="app">
-    <router-view class=""/>
+    <router-view class />
   </div>
 </template>
 
 <style lang="scss">
-
-$primary: #232429;
-$btn-primary: #1B1C20;
-$action: #2669B6;
-$cancel: #B62626;
-$confirm: #388C26;
-$color: #707070;
-$shadow: 5px 5px 5px rgba(0, 0, 0, 0.25);
-$radius: 5px;
-$padding: 2rem;
-$transition: all .2s ease;
-
-
 html {
   font-family: Avenir, Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
@@ -34,61 +21,65 @@ body {
 
 #app {
   text-align: center;
-  color: #2c3e50;
+  color: $dark;
   height: 100vh;
+}
+
+i {
+  width: auto;
 }
 
 button,
 .btn {
-  color: $color;
+  color: $primary;
   font-size: 2rem;
   padding: 10px 20px;
-  border: none;
+  border: 1px solid $dark;
   border-radius: $radius;
-  background-color: $btn-primary;
-  box-shadow: $shadow;
+  background-color: $dark;
   transition: $transition;
   width: 65%;
   &:hover {
-    background-color: darken($btn-primary, 2%);
+    background-color: darken($dark, 2%);
   }
   &:active {
-    background-color: $btn-primary;
+    background-color: $dark;
   }
   &.cancel {
     width: 50%;
   }
-  &.action {
-    background-color: $action;
-    color: #ffffff;
+  &.secondary {
+    background-color: $primary;
+    color: $dark;
+    border: 1px solid $dimmed;
     i {
-      color: #ffffff;
+      color: $dark;
     }
     &:hover {
-      background-color: darken($action, 2%);
+      background-color: darken($primary, 2%);
     }
     &:active {
-      background-color: $btn-primary;
+      background-color: $primary;
     }
   }
 }
 
 input {
   background-color: transparent;
-  border: none;
+  border: 1px solid $dimmed;
   text-align: center;
-  color: #ffffff;
-  box-shadow: inset 5px 5px 5px rgba(0, 0, 0, 0.25),
-  inset -5px -5px 5px rgba(0, 0, 0, 0.25);
-  padding: 10px 20px;
+  color: $dark;
+  font-size: 1.8rem;
+  padding: 10px 15px;
   &:focus {
     outline: none;
   }
 }
 
 h2 {
-  color: $color;
+  color: $dark;
   font-size: 3rem;
+  margin: 0;
 }
 
 .grid-wrapper {
@@ -96,23 +87,26 @@ h2 {
   height: 100vh;
   overflow: hidden;
   grid-template-areas:
-  "header"
-  "main"
-  "nav"
-  ;
+    "header"
+    "main"
+    "nav";
 }
 
-header {  
+.active {
+  color: $dark;
+}
+
+header {
   grid-area: header;
   height: 10vh;
   width: 100%;
-  box-shadow: $shadow;
 }
 
 .main {
   grid-area: main;
   height: 80vh;
   width: 100%;
+  overflow-y: auto;
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -123,17 +117,15 @@ header {
 nav {
   grid-area: nav;
   height: 10vh;
-  width: 100%;
+  width: 80%;
+  display: flex;
+  margin: auto;
   background-color: $primary;
-  box-shadow: -5px -5px 5px rgba($color: #000000, $alpha: 0.25);
+  border-top: 1px solid $dimmed;
 }
 
-.main-contract {
-  height: 60vh;
+.start-wrapper {
+  width: 100%;
+  height: 100%;
 }
-
-.nav-expand {
-  height: 30vh;
-}
-
 </style>

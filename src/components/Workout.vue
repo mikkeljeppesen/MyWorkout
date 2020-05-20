@@ -1,52 +1,36 @@
 <template>
   <div class="container">
-    <h2>{{this.$route.params.workout.name}}</h2> 
+    <h2>{{this.$route.params.workout.name}}</h2>
     <ul class="list">
-      <li v-for="(exercise, index) in this.$route.params.workout.exercises" :key="index"> 
-        <div :class="{ active: panels }" v-on:click="expandPanel" class="btn exercise">
-          <h3>{{exercise.name}}</h3>
-          <form class="exerciseForm">
-            <input type="number" placeholder="Weight in kg">
-            <a class="btn action"><i class="fa fa-plus" aria-hidden="true"></i></a>
-          </form>
-            <a v-on:click="stats(exercise.id)"><i class=" btn fa fa-bar-chart" aria-hidden="true"></i></a>
-        </div>
+      <li v-for="(exercise, index) in this.$route.params.workout.exercises" :key="index">
+        <ExerciseData :data="exercise" />
       </li>
     </ul>
   </div>
 </template>
 
 <script>
-import firebase from 'firebase/app';
-import 'firebase/auth';
+import firebase from "firebase/app";
+import "firebase/auth";
+import "firebase/firestore";
+
+import ExerciseData from "@/components/ExerciseData.vue";
 
 export default {
-  name: "Workout", 
-  data: function() {
-    return {
-      panels: false,
-    };
-  },
-  methods: {
-    stats: function(id) {
-      this.$router.push(this.$route.params.id + "/stats/" + id);
-    },
-    expandPanel: function() {
-      this.panels = !this.panels;
-    
-    }
-  },
-}
+  name: "Workout",
+  components: {
+    ExerciseData
+  }
+};
 </script>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped lang="scss">
-$transition: all .2s ease;
+$transition: all 0.2s ease;
 
 .exercise {
   margin: 10px auto;
   overflow: hidden;
-  height: 23px;
   transition: $transition;
   h3 {
     margin: 0 0 10px 0;
@@ -80,9 +64,5 @@ ul {
 li {
   list-style: none;
   margin: auto;
-}
-
-.active {
-  height: auto;
 }
 </style>

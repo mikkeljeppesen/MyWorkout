@@ -7,17 +7,17 @@
 </template>
 
 <script>
-import firebase from 'firebase/app';
-import 'firebase/auth';
+import firebase from "firebase/app";
+import "firebase/auth";
 
 export default {
   name: "WorkoutsList",
   methods: {
-    goTo: function(id){
+    goTo: function(id) {
       this.$router.push("workouts/" + id);
     }
-  },
-}
+  }
+};
 </script>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->

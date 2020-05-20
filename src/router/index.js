@@ -4,7 +4,7 @@ import Home from '../views/Home.vue'
 import firebase from 'firebase/app';
 import 'firebase/auth';
 import 'firebase/firestore';
-
+import moment from 'moment';
 Vue.use(VueRouter)
 
 const routes = [
@@ -99,42 +99,39 @@ const routes = [
     beforeEnter: function(to, from, next) {
       let minWorkout = to.params.id;
       let minExercise = to.params.idE;
-    //   //når vi kalder denne funktion, så får vi kun catch/error, hvis noget går galt (databsen er nede, eller noget)
-    //   //det betyder, at hvis det dokument vi leder efter ikke eksisterer, så får vi fagtisk ikke en error,
-    //  firebase.firestore().collection("workout").doc(to.params.id).get() 
-    //  .then((doc) => {
-    //    if(doc){ //vi ser om det er et dokument
-    //     let workout = doc.data();
 
-    //     let promises = [];
+     firebase.firestore().collection("exercises").doc(minExercise).get()
+     .then((doc) => {
+        let exercise = doc.data(); // return the exercise object
+        let exerciseData = exercise.data
+        let reps = exercise.sets;
+        let sets = exercise.reps;
 
-    //     workout.exercises.forEach((exercise) => {
-    //       promises.push(firebase.firestore().collection("exercises").doc(exercise).get());
-    //     })
+        let weight = [];
+        let date = [];
+        let total = [];
 
-    //     Promise.all(promises)
-    //     .then((docs) => {
-    //       workout.exercises = [];
-    //       docs.forEach((doc) => {
-    //         let exercise = doc.data();
-    //         exercise.id = doc.id;
-    //         workout.exercises.push(exercise);
-    //       })
-    //       to.params.workout = workout;
-    //       next();
-    //     })
-    //     .catch(() => {
-    //       next("/404");
-    //     })
-    //    }else{
-    //      next("/404");
-    //    }
-    //  })
-    //  .catch((erorr) => {
-       
-    //    next("/404");
-    //  })
-    next();
+        exerciseData.forEach((exercise) => {
+          let exerciseDate = moment(exercise.date.toDate()).format('DD-MM-YYYY');
+          date.push(exerciseDate);
+
+          let exerciseWeight = exercise.weight;
+          weight.push(exerciseWeight);
+
+          let totalMath = exerciseWeight * reps * sets;
+          total.push(totalMath);
+        })
+        console.log(total)
+
+        to.params.total = total
+        to.params.weight = weight;
+        to.params.date = date;
+        next();
+     })
+     .catch((error) => {
+       console.log(error);
+       next("/404");
+     })
     }
   },
   {
@@ -145,17 +142,12 @@ const routes = [
   {
     path: '/404', 
     name: 'NotFound',
-    component: () => import(/* webpackChunkName: "NotFound" */ '../views/404.vue'),
+    component: () => import(/* webpackChunkName: "NotFound" */ '../views/notFound.vue'),
   },
   {
     path: '/workouts/:id/addExercise',
     name: 'addExercise',
     component: () => import(/* webpackChunkName: "addExercise" */ '../views/AddExercise.vue'),
-  },
-  {
-    path: '/workouts/:id/stats/',
-    name: 'stats',
-    component: () => import(/* webpackChunkName: "stats" */ '../views/Stats.vue'),
   },
 
 ]
